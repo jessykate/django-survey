@@ -1,0 +1,191 @@
+#container-main {
+	padding-top: 60px;
+	padding-bottom: 40px;
+}
+
+p { }
+
+html, body {
+	height: 100%;
+	/* The html and body elements cannot have any padding or margin. */
+}
+
+/* Wrapper for page content to push down footer */
+#wrap {
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	/* Negative indent footer by it's height */
+	margin: 0 auto -60px;
+}
+
+#wrapbackgroundimg {
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	/* Negative indent footer by it's height */
+	margin: 0 auto -60px;
+	background-image: url(/media/img/dining-retouched-small.jpg);
+}
+
+/* Set the fixed height of the footer here */
+#push, #footer {
+	height: 60px;
+}
+
+/* Lastly, apply responsive CSS fixes as necessary */
+@media (max-width: 767px) {
+	#footer {
+	  margin-left: -20px;
+	  margin-right: -20px;
+	  padding-left: 20px;
+	  padding-right: 20px;
+	}
+}
+
+#wrapper-narrow {
+	width: 700px;
+}
+
+.button-spacer {
+	padding-top: 30px;
+}
+
+.footer {
+	padding: 30px;
+	background-color: #f5f5f5;
+}
+
+.hero-unit h1 {
+	padding-bottom: 40px;
+}
+
+.hero-unit {
+}
+
+.hero-unit p {
+}
+
+.license {
+}
+
+.btn-xlarge {
+}
+
+.hero-engage {
+}
+
+.hero-engage > .btn-xlarge {
+}
+
+.box-link {
+}
+
+.footer {
+}
+
+textarea {
+}
+
+.helptext {
+}
+
+.navbar {
+}
+
+p.notice {
+	color: grey;
+	font-style: italic;
+}
+
+.res-detail {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.res-modify-btn {
+	width: 400px;
+	padding-top:20px;
+	padding-bottom: 20px;
+	margin: auto;
+	text-align: center;
+}
+
+.res-status-btn {
+	cursor: default;
+}
+
+.timeline-tags {
+	font-style: italic;
+	font-size: 120%;
+}
+
+.new-reservation {
+	padding-top: 30px;
+}
+
+.btn-inline {
+	display: inline;
+}
+
+div.ui-datepicker{
+ font-size:10px;
+}
+
+.btn-red {
+	color: red;
+	border: 1px;
+}
+
+.btn-red:hover {
+	text-decoration: none;
+	color: red;
+}
+
+.form-help-text {
+	font-style: italic;
+	font-size: 90%;
+}
+
+.field-wrapper {
+	width: 475px;
+	padding-bottom: 30px;
+}
+
+textarea {
+	width: 475px;
+	height: 120px;
+}
+
+.float-right {
+	float:right;
+}
+
+img.profile-page-img {
+	width: 300px;
+	height: 200px;
+}
+
+.user-links {
+	padding-top: 30px;
+	padding-bottom: 30px;
+
+}
+
+.user-link {
+	padding-right: 20px;
+}
+
+.icon-spacer {
+	padding-right: 10px;
+}
+
+/*ul.error-list ~ .form-field-body {
+	background-color: red;
+}
+*/
+.survey-description {
+	padding-bottom: 40px;
+	padding-top: 20px;
+
+}

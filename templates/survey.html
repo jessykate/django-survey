@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<h1>Welcome to {{survey.name|title}}</h1>
+<div class="survey-description">
+	{{survey.description}}
+</div>
+
+<div>
+	<form action="/survey/{{survey.id}}/" method="post">{% csrf_token %}
+		{% for field in response_form %}
+		<div class="field-wrapper">
+			{{ field.errors }}
+			{{ field.label_tag }}
+			<span class="form-help-text">{{ field.help_text}}</span>
+			<div class="form-field-body">
+				{{ field }}
+			</div>
+		</div>
+		{% endfor %}
+
+		<input type="submit" value="I'm done!">
+	</form>
+
+</div>
+
+{% endblock %}
