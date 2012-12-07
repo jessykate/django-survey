@@ -28,3 +28,8 @@ def SurveyDetail(request, id):
 
 def Confirm(request, uuid):
 	return render(request, 'confirm.html', {'uuid':uuid})
+
+def privacy(request):
+	return render(request, 'privacy.html')
+
+

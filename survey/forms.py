@@ -41,8 +41,11 @@ class ResponseForm(models.ModelForm):
 		data = kwargs.get('data')
 		for q in survey.questions():
 			if q.question_type == Question.TEXT:
+				if q.category:
+					cat = q.category.id 
+				else: cat = 0
 				self.fields["question_%d" % q.pk] = forms.CharField(label=q.text, 
-				widget=forms.Textarea)
+				widget=forms.Textarea(attrs={"class": "category_%d" % cat}))
 			elif q.question_type == Question.RADIO:
 				question_choices = q.get_choices()
 				self.fields["question_%d" % q.pk] = forms.ChoiceField(label=q.text, 
