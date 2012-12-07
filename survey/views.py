@@ -22,6 +22,7 @@ def SurveyDetail(request, id):
 			return HttpResponseRedirect("/confirm/%s" % response.interview_uuid)
 	else:
 		form = ResponseForm(survey=survey)
+		print form
 		# TODO sort by category
 	return render(request, 'survey.html', {'response_form': form, 'survey': survey})
 
