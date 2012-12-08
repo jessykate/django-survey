@@ -44,7 +44,7 @@ class Question(models.Model):
 
 	text = models.TextField()
 	required = models.BooleanField()
-	category = models.ForeignKey(Category, blank=True, null=True) 
+	category = models.ForeignKey(Category, blank=True, null=True,) 
 	survey = models.ForeignKey(Survey)
 	question_type = models.CharField(max_length=200, choices=QUESTION_TYPES, default=TEXT)
 	# the choices field is only used if the question type 
@@ -77,10 +77,10 @@ class Response(models.Model):
 	created = models.DateTimeField(auto_now_add=True)
 	updated = models.DateTimeField(auto_now=True)
 	survey = models.ForeignKey(Survey)
-	interviewer = models.CharField(max_length=400)
-	interviewee = models.CharField(max_length=400)
-	conditions = models.TextField(blank=True, null=True)
-	comments = models.TextField(blank=True, null=True)
+	interviewer = models.CharField('Name of Interviewer', max_length=400)
+	interviewee = models.CharField('Name of Interviewee', max_length=400)
+	conditions = models.TextField('Conditions during interview', blank=True, null=True)
+	comments = models.TextField('Any additional Comments', blank=True, null=True)
 	interview_uuid = models.CharField("Interview unique identifier", max_length=36)
 
 	def __unicode__(self):
