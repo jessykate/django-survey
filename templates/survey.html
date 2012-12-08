@@ -9,6 +9,10 @@
 
 <div>
 	<form action="/survey/{{survey.id}}/" method="post">{% csrf_token %}
+
+		<h3 class="collapsible" id="response_metadata">Response Metadata<span></span></h3>
+		<div class="category-container">
+
 		<div class="field-wrapper question-required">
 			{{ response_form.interviewer.errors }}
 			<span class="asterix"> * </span>{{ response_form.interviewer.label_tag }}
@@ -44,6 +48,7 @@
 				{{ response_form.comments }}
 			</div>
 		</div>
+	</div>
 
 		{% for category in categories %}
 			<h3 class="collapsible">{{category|title}} Questions<span></span></h3>
@@ -81,7 +86,7 @@
 	<script type="text/javascript">
 		$(document).ready(function() {
 			//collapsible management
-			$('.collapsible').collapsible();
+			$('.collapsible').collapsible({defaultOpen: 'response_metadata'});
 		});
 	</script>
 {% endblock %}

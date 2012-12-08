@@ -247,3 +247,8 @@ label {
 	display: inline;
 	padding-right: 12px;
 }
+
+#id_comments, #id_conditions {
+	height: 50px;
+}
+
