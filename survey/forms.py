@@ -1,27 +1,15 @@
 from django import forms
 from django.forms import models
 from survey.models import Question, Category, Survey, Response, AnswerText, AnswerRadio, AnswerSelect, AnswerInteger, AnswerSelectMultiple
-
+from django.utils.safestring import mark_safe
 import uuid
 
-# one field from each question
-# when saving, one answer object for each question. 
+# blatantly stolen from 
+# http://stackoverflow.com/questions/5935546/align-radio-buttons-horizontally-in-django-forms?rq=1
+class HorizontalRadioRenderer(forms.RadioSelect.renderer):
+  def render(self):
+    return mark_safe(u'\n'.join([u'%s\n' % w for w in self]))
 
-# class AnswerForm(models.ModelForm):
-# 	class Meta:
-# 		model = Answer 
-# 		include = ['text']
-
-# 	def __init__(self, *args, **kwargs):
-# 		question = kwargs.pop('question')
-# 		super(AnswerForm, self).__init__(*args, **kwargs)
-# 		question_text = question.text
-# 		self.fields.label = question_text
-
-# 	def save(self, commit=True):
-# 		ans = super(AnswerForm, self).save(commit=False)
-# 		ans.question = question
-# 		ans.save()
 
 class ResponseForm(models.ModelForm):
 	class Meta:
@@ -45,7 +33,8 @@ class ResponseForm(models.ModelForm):
 			elif q.question_type == Question.RADIO:
 				question_choices = q.get_choices()
 				self.fields["question_%d" % q.pk] = forms.ChoiceField(label=q.text, 
-					widget=forms.RadioSelect, choices = question_choices)
+					widget=forms.RadioSelect(renderer=HorizontalRadioRenderer), 
+					choices = question_choices)
 			elif q.question_type == Question.SELECT:
 				question_choices = q.get_choices()
 				self.fields["question_%d" % q.pk] = forms.ChoiceField(label=q.text, 

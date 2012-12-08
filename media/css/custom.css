@@ -242,3 +242,8 @@ h3.collapsible:hover {
 	width: 700px;
 	margin: auto;
 }
+
+label {
+	display: inline;
+	padding-right: 12px;
+}
