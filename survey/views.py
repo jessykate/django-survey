@@ -5,8 +5,9 @@ from django.template import RequestContext
 from django.core import urlresolvers
 from django.contrib import messages
 import datetime
+import settings
 
-from models import Question, Survey
+from models import Question, Survey, Category
 from forms import ResponseForm
 
 
@@ -15,6 +16,10 @@ def Index(request):
 
 def SurveyDetail(request, id):
 	survey = Survey.objects.get(id=id)
+	category_items = Category.objects.filter(survey=survey)
+	categories = [c.name for c in category_items]
+	print 'categories for this survey:'
+	print categories
 	if request.method == 'POST':
 		form = ResponseForm(request.POST, survey=survey)
 		if form.is_valid():
@@ -24,10 +29,11 @@ def SurveyDetail(request, id):
 		form = ResponseForm(survey=survey)
 		print form
 		# TODO sort by category
-	return render(request, 'survey.html', {'response_form': form, 'survey': survey})
+	return render(request, 'survey.html', {'response_form': form, 'survey': survey, 'categories': categories})
 
 def Confirm(request, uuid):
-	return render(request, 'confirm.html', {'uuid':uuid})
+	email = settings.support_email
+	return render(request, 'confirm.html', {'uuid':uuid, "email": email})
 
 def privacy(request):
 	return render(request, 'privacy.html')

@@ -35,17 +35,13 @@ class ResponseForm(models.ModelForm):
 		super(ResponseForm, self).__init__(*args, **kwargs)
 		self.uuid = random_uuid = uuid.uuid4().hex	
 
-		# add a field for each question associated with this survey,
-		# corresponding to the question type as appropriate.
-
+		# add a field for each survey question, corresponding to the question
+		# type as appropriate.
 		data = kwargs.get('data')
 		for q in survey.questions():
 			if q.question_type == Question.TEXT:
-				if q.category:
-					cat = q.category.id 
-				else: cat = 0
 				self.fields["question_%d" % q.pk] = forms.CharField(label=q.text, 
-				widget=forms.Textarea(attrs={"class": "category_%d" % cat}))
+					widget=forms.Textarea)
 			elif q.question_type == Question.RADIO:
 				question_choices = q.get_choices()
 				self.fields["question_%d" % q.pk] = forms.ChoiceField(label=q.text, 
@@ -61,12 +57,26 @@ class ResponseForm(models.ModelForm):
 			elif q.question_type == Question.INTEGER:
 				self.fields["question_%d" % q.pk] = forms.IntegerField(label=q.text)				
 			
-			if not q.required:
-				print "question __%s__ is not required" % q.text
+			# if the field is required, give it a corresponding css class.
+			if q.required:
+				self.fields["question_%d" % q.pk].required = True
+				self.fields["question_%d" % q.pk].widget.attrs["class"] = "required"
+			else:
 				self.fields["question_%d" % q.pk].required = False
+				
+			# add the category as a css class, and add it as a data attribute
+			# as well (this is used in the template to allow sorting the
+			# questions by category)
+			if q.category:
+				classes = self.fields["question_%d" % q.pk].widget.attrs.get("class")
+				if classes:
+					self.fields["question_%d" % q.pk].widget.attrs["class"] = classes + (" cat_%s" % q.category.name)
+				else:
+					self.fields["question_%d" % q.pk].widget.attrs["class"] = (" cat_%s" % q.category.name)
+				self.fields["question_%d" % q.pk].widget.attrs["category"] = q.category.name
 
-			# initialize the form field with values from a POST request, if
-			# any.
+
+			# initialize the form field with values from a POST request, if any.
 			if data:
 				self.fields["question_%d" % q.pk].initial = data.get('question_%d' % q.pk)
 

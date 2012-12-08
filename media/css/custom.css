@@ -149,7 +149,8 @@ div.ui-datepicker{
 
 .field-wrapper {
 	width: 475px;
-	padding-bottom: 30px;
+	margin-bottom: 30px;
+	padding: 20px;
 }
 
 textarea {
@@ -188,4 +189,51 @@ img.profile-page-img {
 	padding-bottom: 40px;
 	padding-top: 20px;
 
+}
+
+.question-required {
+	background: #E0FFD6;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+}
+
+h3.collapsible:hover {
+	cursor: hand; 
+	cursor: pointer; ;
+}
+
+.collapse-open span {
+    display:block;
+    float:left;
+    padding:20px; 
+}
+
+.accordion-open span, .collapse-open span {
+    background:url(/media/img/collapse.png) center center no-repeat; }
+
+.accordion-close span, .collapse-close span {
+    display:block;
+    float:left;
+    background:url(/media/img/expand.png) center center no-repeat;
+    padding:20px; 
+}
+
+.submit-button {
+	padding: 40px;
+}
+
+.submit-button > input {
+	font-size: 130%;
+	padding: 10px;
+}
+
+.asterix {
+	color: red;
+	font-size: 200%;
+	vertical-align: middle
+}
+
+.label-inline {
+	display: inline;
 }
