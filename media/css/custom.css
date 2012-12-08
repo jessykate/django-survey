@@ -237,3 +237,8 @@ h3.collapsible:hover {
 .label-inline {
 	display: inline;
 }
+
+#intro {
+	width: 700px;
+	margin: auto;
+}
