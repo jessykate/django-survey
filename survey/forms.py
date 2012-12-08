@@ -37,6 +37,9 @@ class ResponseForm(models.ModelForm):
 					choices = question_choices)
 			elif q.question_type == Question.SELECT:
 				question_choices = q.get_choices()
+				# add an empty option at the top so that the user has to
+				# explicitly select one of the options
+				question_choices = tuple([('', '-------------')]) + question_choices
 				self.fields["question_%d" % q.pk] = forms.ChoiceField(label=q.text, 
 					widget=forms.Select, choices = question_choices)
 			elif q.question_type == Question.SELECT_MULTIPLE:
