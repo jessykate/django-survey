@@ -252,3 +252,11 @@ label {
 	height: 50px;
 }
 
+ol.survey-questions {
+	margin-left: 0px;
+}
+
+.q-item {
+	margin-left: 60px;
+}
+
