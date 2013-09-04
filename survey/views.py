@@ -1,5 +1,4 @@
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404, redirect
 
 from .models import Survey, Category
 from .forms import ResponseForm
@@ -34,10 +33,11 @@ class SurveyDetail(View):
         form = ResponseForm(request.POST, survey=survey)
         if form.is_valid():
             response = form.save()
-            return HttpResponseRedirect("/confirm/%s" % response.interview_uuid)
+            return redirect('survey-confirmation', uuid=response.interview_uuid)
 
         context = {'response_form': form, 'survey': survey, 'categories': categories}
         return render(request, self.template_name, context)
+
 
 class ConfirmView(TemplateView):
     template_name = 'confirm.html'

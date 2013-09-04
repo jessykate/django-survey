@@ -12,7 +12,7 @@ class Survey(models.Model):
 
 	@models.permalink
 	def get_absolute_url(self):
-		return ('survey_detail', [self.id])
+		return ('survey-detail', [self.id])
 
 	def questions(self):
 		if self.pk:

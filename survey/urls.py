@@ -11,9 +11,9 @@ media_url = settings.MEDIA_URL.lstrip('/').rstrip('/')
 
 urlpatterns = patterns('',
 	# Examples:
-	url(r'^$', IndexView.as_view(), name='home'),
-	url(r'^survey/(?P<id>\d+)/$', SurveyDetail.as_view(), name='survey_detail'),
-	url(r'^confirm/(?P<uuid>\w+)/$', ConfirmView.as_view(), name='confirmation'),
+	url(r'^$', IndexView.as_view(), name='survey-list'),
+	url(r'^survey/(?P<id>\d+)/$', SurveyDetail.as_view(), name='survey-detail'),
+	url(r'^confirm/(?P<uuid>\w+)/$', ConfirmView.as_view(), name='survey-confirmation'),
 
 	# Uncomment the next line to enable the admin:
 	url(r'^admin/', include(admin.site.urls)),

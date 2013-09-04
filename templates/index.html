@@ -4,9 +4,9 @@
 <div id="intro">
 	<h1>Welcome to the Django Survey app</h1>
 
-	<div>
+	<ul>
 		{% for survey in surveys %}
-		<a href="{{ survey.get_absolute_url }}">Take the Survey {{survey.name}}</a>{% if not forloop.last %} || {% endif %}
+		<li><a href="{{ survey.get_absolute_url }}">Take the Survey {{survey.name}}</a></li>
 		{% endfor %}
 	</div>
 </div>
