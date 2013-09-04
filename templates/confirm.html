@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 
-{% block body %}
+{% block title %}Survey submitted{% endblock title %}
 
-Thanks! Your confirmation code is {{uuid}}. Use this to refer to your response. In case you have any questions, contact {{ email }}
+{% block body %}
+<h1>Survey submitted</h1>
+<p>
+	Thanks! Your confirmation code is {{uuid}}. Use this to refer to your response.
+</p>
 {% endblock %}

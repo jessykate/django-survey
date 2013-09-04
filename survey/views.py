@@ -1,39 +1,48 @@
-from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render_to_response
-from django.template import RequestContext
-from django.core import urlresolvers
-from django.contrib import messages
-import datetime
-import settings
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseRedirect
 
-from models import Question, Survey, Category
-from forms import ResponseForm
+from .models import Survey, Category
+from .forms import ResponseForm
 
 
-def Index(request):
-	return render(request, 'index.html')
+from django.views.generic import TemplateView, View
 
-def SurveyDetail(request, id):
-	survey = Survey.objects.get(id=id)
-	category_items = Category.objects.filter(survey=survey)
-	categories = [c.name for c in category_items]
-	print 'categories for this survey:'
-	print categories
-	if request.method == 'POST':
-		form = ResponseForm(request.POST, survey=survey)
-		if form.is_valid():
-			response = form.save()
-			return HttpResponseRedirect("/confirm/%s" % response.interview_uuid)
-	else:
-		form = ResponseForm(survey=survey)
-		print form
-		# TODO sort by category
-	return render(request, 'survey.html', {'response_form': form, 'survey': survey, 'categories': categories})
+class IndexView(TemplateView):
+    template_name = "index.html"
 
-def Confirm(request, uuid):
-	email = settings.support_email
-	return render(request, 'confirm.html', {'uuid':uuid, "email": email})
+    def get_context_data(self, **kwargs):
+        context = super(IndexView, self).get_context_data(**kwargs)
+        context['surveys'] = Survey.objects.filter(is_published=True)
+        return context
 
 
+class SurveyDetail(View):
+    template_name = 'survey.html'
 
+    def get(self, request, *args, **kwargs):
+        survey = get_object_or_404(Survey, is_published=True, id=kwargs['id'])
+        category_items = Category.objects.filter(survey=survey)
+        categories = [c.name for c in category_items]
+        form = ResponseForm(survey=survey)
+        context = {'response_form': form, 'survey': survey, 'categories': categories}
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        survey = get_object_or_404(Survey, is_published=True, id=kwargs['id'])
+        category_items = Category.objects.filter(survey=survey)
+        categories = [c.name for c in category_items]
+        form = ResponseForm(request.POST, survey=survey)
+        if form.is_valid():
+            response = form.save()
+            return HttpResponseRedirect("/confirm/%s" % response.interview_uuid)
+
+        context = {'response_form': form, 'survey': survey, 'categories': categories}
+        return render(request, self.template_name, context)
+
+class ConfirmView(TemplateView):
+    template_name = 'confirm.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ConfirmView, self).get_context_data(**kwargs)
+        context['uuid'] = kwargs['uuid']
+        return context

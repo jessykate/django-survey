@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load survey_extras %}
 
+{% block title %}{{survey.name|title}}{% endblock title %}
+
 {% block body %}
 
 <h1>Welcome to {{survey.name|title}}</h1>
@@ -9,47 +11,7 @@
 </div>
 
 <div>
-	<form action="/survey/{{survey.id}}/" method="post">{% csrf_token %}
-
-		<h3 class="collapsible" id="response_metadata">Response Metadata<span></span></h3>
-		<div class="category-container">
-
-		<div class="field-wrapper question-required">
-			{{ response_form.interviewer.errors }}
-			<span class="asterix"> * </span>{{ response_form.interviewer.label_tag }}
-			<span class="form-help-text">{{ response_form.interviewer.help_text}}</span>
-			<div class="form-field-body">
-				{{ response_form.interviewer }}
-			</div>
-		</div>
-
-		<div class="field-wrapper question-required">
-			{{ response_form.interviewee.errors }}
-			<span class="asterix"> * </span>{{ response_form.interviewee.label_tag }}
-			<span class="form-help-text">{{ response_form.interviewee.help_text}}</span>
-			<div class="form-field-body">
-				{{ response_form.interviewee }}
-			</div>
-		</div>
-
-		<div class="field-wrapper">
-			{{ response_form.conditions.errors }}
-			{{ response_form.conditions.label_tag }}
-			<span class="form-help-text">{{ response_form.conditions.help_text}}</span>
-			<div class="form-field-body">
-				{{ response_form.conditions }}
-			</div>
-		</div>
-
-		<div class="field-wrapper">
-			{{ response_form.comments.errors }}
-			{{ response_form.comments.label_tag }}
-			<span class="form-help-text">{{ response_form.comments.help_text}}</span>
-			<div class="form-field-body">
-				{{ response_form.comments }}
-			</div>
-		</div>
-	</div>
+	<form action="{{ survey.get_absolute_url }}" method="post">{% csrf_token %}
 
 		<ol class="survey-questions">
 		{% for category in categories %}
@@ -57,7 +19,7 @@
 			<div class="category-container">
 			{% for field in response_form %}
 				{% if field.field.widget.attrs.category == category %}
-					<li class="q-item" value="{% counter %}">
+					<li value="{% counter %}">
 					{% if field.field.required %} 
 					<div class="field-wrapper question-required"> 
 						{{ field.errors }}
@@ -77,21 +39,32 @@
 			{% endfor %}
 			</div>
 		{% endfor %}
+		
+		<div class="category-container">
+		{% for field in response_form %}
+			{% if not field.field.widget.attrs.category %}
+				<li class="q-item" value="{% counter %}">
+				{% if field.field.required %} 
+				<div class="field-wrapper question-required"> 
+					{{ field.errors }}
+					<span class="asterix"> * </span><label class="label-inline">{{ field.label }}</label>
+				{% else %} 
+				<div class="field-wrapper"> 
+					{{ field.errors }}
+					<label class="label-inline">{{ field.label }}</label>
+				{% endif %}
+					<span class="form-help-text">{{ field.help_text}}</span>
+					<div class="form-field-body">
+						{{ field }}
+					</div>
+				</div>
+				</li>
+			{% endif %}
+		{% endfor %}
+		</div>
 		</ol>
 
 		<div class="submit-button"><input type="submit" value="I'm done!"></div>
 	</form>
-
 </div>
-
-{% endblock %}
-
-{% block extrajs %}
-	<script src="/media/js/jquery.collapsible.js"></script>	
-	<script type="text/javascript">
-		$(document).ready(function() {
-			//collapsible management
-			$('.collapsible').collapsible({defaultOpen: 'response_metadata'});
-		});
-	</script>
 {% endblock %}

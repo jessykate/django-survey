@@ -4,18 +4,16 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 import settings
 
+from .views import IndexView, SurveyDetail, ConfirmView
+
 admin.autodiscover()
 media_url = settings.MEDIA_URL.lstrip('/').rstrip('/')
 
 urlpatterns = patterns('',
 	# Examples:
-	url(r'^$', 'survey.views.Index', name='home'),
-	url(r'^survey/(?P<id>\d+)/$', 'survey.views.SurveyDetail', name='survey_detail'),
-	url(r'^confirm/(?P<uuid>\w+)/$', 'survey.views.Confirm', name='confirmation'),
-
-
-	# Uncomment the admin/doc line below to enable admin documentation:
-	url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+	url(r'^$', IndexView.as_view(), name='home'),
+	url(r'^survey/(?P<id>\d+)/$', SurveyDetail.as_view(), name='survey_detail'),
+	url(r'^confirm/(?P<uuid>\w+)/$', ConfirmView.as_view(), name='confirmation'),
 
 	# Uncomment the next line to enable the admin:
 	url(r'^admin/', include(admin.site.urls)),

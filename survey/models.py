@@ -1,18 +1,25 @@
 from django.db import models
-from django.core.exceptions import ValidationError
+
+from .utils import validate_list
 
 class Survey(models.Model):
 	name = models.CharField(max_length=400)
 	description = models.TextField()
+	is_published = models.BooleanField()
 
 	def __unicode__(self):
 		return (self.name)
+
+	@models.permalink
+	def get_absolute_url(self):
+		return ('survey_detail', [self.id])
 
 	def questions(self):
 		if self.pk:
 			return Question.objects.filter(survey=self.pk)
 		else:
-			return None
+			return Question.objects.none()
+
 
 class Category(models.Model):
 	name = models.CharField(max_length=400)
@@ -21,21 +28,18 @@ class Category(models.Model):
 	def __unicode__(self):
 		return (self.name)
 
-def validate_list(value):
-	'''takes a text value and verifies that there is at least one comma '''
-	values = value.split(',')
-	if len(values) < 2:
-		raise ValidationError("The selected field requires an associated list of choices. Choices must contain more than one item.")
 
 class Question(models.Model):
 	TEXT = 'text'
+	SHORT_TEXT = 'short-text'
 	RADIO = 'radio'
 	SELECT = 'select'
 	SELECT_MULTIPLE = 'select-multiple'
 	INTEGER = 'integer'
 
 	QUESTION_TYPES = (
-		(TEXT, 'text'),
+		(TEXT, 'text (multiple line)'),
+		(SHORT_TEXT, 'short text (one line)'),
 		(RADIO, 'radio'),
 		(SELECT, 'select'),
 		(SELECT_MULTIPLE, 'Select Multiple'),
@@ -43,6 +47,7 @@ class Question(models.Model):
 	)
 
 	text = models.TextField()
+	order = models.IntegerField()
 	required = models.BooleanField()
 	category = models.ForeignKey(Category, blank=True, null=True,) 
 	survey = models.ForeignKey(Survey)
@@ -71,20 +76,21 @@ class Question(models.Model):
 	def __unicode__(self):
 		return (self.text)
 
+	class Meta:
+		ordering = ('survey', 'order')
+
+
 class Response(models.Model):
 	# a response object is just a collection of questions and answers with a
 	# unique interview uuid
 	created = models.DateTimeField(auto_now_add=True)
 	updated = models.DateTimeField(auto_now=True)
 	survey = models.ForeignKey(Survey)
-	interviewer = models.CharField('Name of Interviewer', max_length=400)
-	interviewee = models.CharField('Name of Interviewee', max_length=400)
-	conditions = models.TextField('Conditions during interview', blank=True, null=True)
-	comments = models.TextField('Any additional Comments', blank=True, null=True)
 	interview_uuid = models.CharField("Interview unique identifier", max_length=36)
 
 	def __unicode__(self):
 		return ("response %s" % self.interview_uuid)
+
 
 class AnswerBase(models.Model):
 	question = models.ForeignKey(Question)
@@ -109,11 +115,3 @@ class AnswerSelectMultiple(AnswerBase):
 
 class AnswerInteger(AnswerBase):
 	body = models.IntegerField(blank=True, null=True)
-
-
-
-
-
-
-
-

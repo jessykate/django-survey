@@ -1,19 +1,22 @@
-from survey.models import Question, Category, Survey, Response, AnswerText, AnswerRadio, AnswerSelect, AnswerInteger, AnswerSelectMultiple
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import User
+
+from .models import Question, Category, Survey, Response, AnswerText, AnswerRadio, AnswerSelect, AnswerInteger, AnswerSelectMultiple
+from .actions import make_published
 
 class QuestionInline(admin.TabularInline):
 	model = Question
-	ordering = ('category',)
-	extra = 0
+	ordering = ('category', 'order',)
+	extra = 1
 
 class CategoryInline(admin.TabularInline):
 	model = Category
 	extra = 0
 
 class SurveyAdmin(admin.ModelAdmin):
+	list_display = ('name', 'is_published')
+	list_filter = ('is_published',)
 	inlines = [CategoryInline, QuestionInline]
+	actions = [make_published,]
 
 class AnswerBaseInline(admin.StackedInline):
 	fields = ('question', 'body')
@@ -36,7 +39,9 @@ class AnswerIntegerInline(AnswerBaseInline):
 	model= AnswerInteger 
 
 class ResponseAdmin(admin.ModelAdmin):
-	list_display = ('interview_uuid', 'interviewer', 'created') 
+	list_display = ('interview_uuid', 'survey', 'created')
+	list_filter = ('survey', 'created')
+	date_hierarchy = 'created'
 	inlines = [AnswerTextInline, AnswerRadioInline, AnswerSelectInline, AnswerSelectMultipleInline, AnswerIntegerInline]
 	# specifies the order as well as which fields to act on 
 	readonly_fields = ('survey', 'created', 'updated', 'interview_uuid')
