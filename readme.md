@@ -1,6 +1,6 @@
 install requirements using `pip install -r requirements.txt`
 
-then run using `./manage.py runserver`
+then run using `./survey_test/manage.py runserver`
 
 ## about
 
