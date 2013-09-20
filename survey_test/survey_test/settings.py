@@ -118,7 +118,6 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
     path("templates/"),
 )
-print TEMPLATE_DIRS
 
 INSTALLED_APPS = (
     'django.contrib.auth',

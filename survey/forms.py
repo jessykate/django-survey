@@ -6,6 +6,8 @@ from django.forms import models
 from survey.models import Question, Response
 from survey.models import AnswerText, AnswerRadio, AnswerSelect
 from survey.models import AnswerInteger, AnswerSelectMultiple
+from survey.widgets import ImageSelectWidget
+
 from django.utils.safestring import mark_safe
 
 # blatantly stolen from 
@@ -50,6 +52,13 @@ class ResponseForm(models.ModelForm):
                 question_choices = tuple([('', '-------------')]) + question_choices
                 self.fields["question_%d" % q.pk] = forms.ChoiceField(label=q.text, 
                     widget=forms.Select, choices = question_choices)
+            elif q.question_type == Question.SELECT_IMAGE:
+                question_choices = q.get_choices()
+                # add an empty option at the top so that the user has to
+                # explicitly select one of the options
+                question_choices = tuple([('', '-------------')]) + question_choices
+                self.fields["question_%d" % q.pk] = forms.ChoiceField(label=q.text, 
+                    widget=ImageSelectWidget, choices = question_choices)
             elif q.question_type == Question.SELECT_MULTIPLE:
                 question_choices = q.get_choices()
                 self.fields["question_%d" % q.pk] = forms.MultipleChoiceField(label=q.text, 
@@ -87,6 +96,12 @@ class ResponseForm(models.ModelForm):
         response.interview_uuid = self.uuid
         response.save()
 
+        # response "raw" data as dict (for signal)
+        data = {
+            'survey_id': response.survey.id,
+            'interview_uuid': response.interview_uuid,
+            'responses': []
+        }
         # create an answer object for each question and associate it with this
         # response.
         for field_name, field_value in self.cleaned_data.iteritems():
@@ -106,18 +121,26 @@ class ResponseForm(models.ModelForm):
                 elif q.question_type == Question.SELECT:
                     a = AnswerSelect(question = q)  
                     a.body = field_value
+                elif q.question_type == Question.SELECT_IMAGE:
+                    a = AnswerSelect(question = q)
+                    value, img_src = field_value.split(":", 1)
+                    a.body = value
                 elif q.question_type == Question.SELECT_MULTIPLE:
                     a = AnswerSelectMultiple(question = q)  
                     a.body = field_value
                 elif q.question_type == Question.INTEGER:   
                     a = AnswerInteger(question = q) 
                     a.body = field_value
+                data['responses'].append((a.question.id, a.body))
                 logging.debug("creating answer to question %d of type %s" % (q_id, a.question.question_type))
                 logging.debug(a.question.text)
                 logging.debug('answer value:')
                 logging.debug(field_value)
+
                 a.response = response
                 a.save()
+        logging.debug("raw data")
+        logging.debug(data)
         return response
 
 

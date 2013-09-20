@@ -3,6 +3,11 @@
 
 {% block title %}{{survey.name|title}}{% endblock title %}
 
+{% block extrajs %}
+
+{{response_form.media}}
+{% endblock %}
+
 {% block body %}
 
 <h1>Welcome to {{survey.name|title}}</h1>
@@ -19,7 +24,7 @@
 			<div class="category-container">
 			{% for field in response_form %}
 				{% if field.field.widget.attrs.category == category %}
-					<li value="{% counter %}">
+					<li>
 					{% if field.field.required %} 
 					<div class="field-wrapper question-required"> 
 						{{ field.errors }}
@@ -43,7 +48,7 @@
 		<div class="category-container">
 		{% for field in response_form %}
 			{% if not field.field.widget.attrs.category %}
-				<li class="q-item" value="{% counter %}">
+				<li>
 				{% if field.field.required %} 
 				<div class="field-wrapper question-required"> 
 					{{ field.errors }}

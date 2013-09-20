@@ -43,6 +43,7 @@ class Question(models.Model):
     SHORT_TEXT = 'short-text'
     RADIO = 'radio'
     SELECT = 'select'
+    SELECT_IMAGE = 'select_image'
     SELECT_MULTIPLE = 'select-multiple'
     INTEGER = 'integer'
 
@@ -52,6 +53,7 @@ class Question(models.Model):
         (RADIO, _(u'radio')),
         (SELECT, _(u'select')),
         (SELECT_MULTIPLE, _(u'Select Multiple')),
+        (SELECT_IMAGE, _(u'Select Image')),
         (INTEGER, _(u'integer')),
     )
 
