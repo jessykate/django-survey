@@ -13,8 +13,8 @@ class CategoryInline(admin.TabularInline):
 	extra = 0
 
 class SurveyAdmin(admin.ModelAdmin):
-	list_display = ('name', 'is_published')
-	list_filter = ('is_published',)
+	list_display = ('name', 'is_published', 'need_logged_user')
+	list_filter = ('is_published', 'need_logged_user')
 	inlines = [CategoryInline, QuestionInline]
 	actions = [make_published,]
 
@@ -39,12 +39,12 @@ class AnswerIntegerInline(AnswerBaseInline):
 	model= AnswerInteger 
 
 class ResponseAdmin(admin.ModelAdmin):
-	list_display = ('interview_uuid', 'survey', 'created')
+	list_display = ('interview_uuid', 'survey', 'created', 'user')
 	list_filter = ('survey', 'created')
 	date_hierarchy = 'created'
 	inlines = [AnswerTextInline, AnswerRadioInline, AnswerSelectInline, AnswerSelectMultipleInline, AnswerIntegerInline]
 	# specifies the order as well as which fields to act on 
-	readonly_fields = ('survey', 'created', 'updated', 'interview_uuid')
+	readonly_fields = ('survey', 'created', 'updated', 'interview_uuid', 'user')
 
 #admin.site.register(Question, QuestionInline)
 #admin.site.register(Category, CategoryInline)

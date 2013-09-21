@@ -25,6 +25,7 @@ class ResponseForm(models.ModelForm):
     def __init__(self, *args, **kwargs):
         # expects a survey object to be passed in initially
         survey = kwargs.pop('survey')
+        self.user = kwargs.pop('user')
         self.survey = survey
         super(ResponseForm, self).__init__(*args, **kwargs)
         random_uuid = uuid.uuid4().hex
@@ -94,6 +95,8 @@ class ResponseForm(models.ModelForm):
         response = super(ResponseForm, self).save(commit=False)
         response.survey = self.survey
         response.interview_uuid = self.uuid
+        if self.user.is_authenticated():
+            response.user = self.user
         response.save()
 
         # response "raw" data as dict (for signal)

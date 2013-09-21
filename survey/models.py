@@ -1,12 +1,13 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
+from django.contrib.auth.models import User
 from .utils import validate_list
 
 class Survey(models.Model):
     name = models.CharField(max_length=400)
     description = models.TextField()
     is_published = models.BooleanField()
+    need_logged_user = models.BooleanField()
 
     class Meta:
         verbose_name = _('survey')
@@ -79,8 +80,10 @@ class Question(models.Model):
         super(Question, self).save(*args, **kwargs)
 
     def get_choices(self):
-        ''' parse the choices field and return a tuple formatted appropriately
-        for the 'choices' argument of a form widget.'''
+        """
+        Parse the choices field and return a tuple formatted appropriately
+        for the 'choices' argument of a form widget.
+        """
         choices = self.choices.split(',')
         choices_list = []
         for c in choices:
@@ -94,11 +97,14 @@ class Question(models.Model):
 
 
 class Response(models.Model):
-    # a response object is just a collection of questions and answers with a
-    # unique interview uuid
+    """
+    A Response object is just a collection of questions and answers with a
+    unique interview uuid
+    """
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     survey = models.ForeignKey(Survey)
+    user = models.ForeignKey(User, null=True, blank=True)
     interview_uuid = models.CharField(_(u"Interview unique identifier"), max_length=36)
 
     class Meta:
