@@ -16,8 +16,7 @@
 </div>
 
 <div>
-	<form action="{{ survey.get_absolute_url }}" method="post">{% csrf_token %}
-
+	<form action="{{ response_form.current_step_url }}" method="post">{% csrf_token %}
 		<ol class="survey-questions">
 		{% for category in categories %}
 			<h3 class="collapsible">{{category|title}} Questions<span></span></h3>

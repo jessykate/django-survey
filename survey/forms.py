@@ -3,6 +3,8 @@ import logging
 
 from django import forms
 from django.forms import models
+from django.core.urlresolvers import reverse
+
 from survey.models import Question, Response
 from survey.models import AnswerText, AnswerRadio, AnswerSelect
 from survey.models import AnswerInteger, AnswerSelectMultiple
@@ -25,70 +27,96 @@ class ResponseForm(models.ModelForm):
     def __init__(self, *args, **kwargs):
         # expects a survey object to be passed in initially
         survey = kwargs.pop('survey')
-        self.user = kwargs.pop('user')
         self.survey = survey
+        self.user = kwargs.pop('user')
+        try:
+            self.step = int(kwargs.pop('step'))
+        except KeyError:
+            self.step = None
+
+        
         super(ResponseForm, self).__init__(*args, **kwargs)
         random_uuid = uuid.uuid4().hex
         self.uuid = random_uuid
-
+        
+        self.steps_count = survey.questions().count()
+        
         # add a field for each survey question, corresponding to the question
         # type as appropriate.
         data = kwargs.get('data')
-        for q in survey.questions():
-            if q.question_type == Question.TEXT:
-                self.fields["question_%d" % q.pk] = forms.CharField(label=q.text, 
-                    widget=forms.Textarea)
-            elif q.question_type == Question.SHORT_TEXT:
-                self.fields["question_%d" % q.pk] = forms.CharField(label=q.text, 
-                    widget=forms.TextInput)
-            elif q.question_type == Question.RADIO:
-                question_choices = q.get_choices()
-                self.fields["question_%d" % q.pk] = forms.ChoiceField(label=q.text, 
-                    widget=forms.RadioSelect(renderer=HorizontalRadioRenderer), 
-                    choices = question_choices)
-            elif q.question_type == Question.SELECT:
-                question_choices = q.get_choices()
-                # add an empty option at the top so that the user has to
-                # explicitly select one of the options
-                question_choices = tuple([('', '-------------')]) + question_choices
-                self.fields["question_%d" % q.pk] = forms.ChoiceField(label=q.text, 
-                    widget=forms.Select, choices = question_choices)
-            elif q.question_type == Question.SELECT_IMAGE:
-                question_choices = q.get_choices()
-                # add an empty option at the top so that the user has to
-                # explicitly select one of the options
-                question_choices = tuple([('', '-------------')]) + question_choices
-                self.fields["question_%d" % q.pk] = forms.ChoiceField(label=q.text, 
-                    widget=ImageSelectWidget, choices = question_choices)
-            elif q.question_type == Question.SELECT_MULTIPLE:
-                question_choices = q.get_choices()
-                self.fields["question_%d" % q.pk] = forms.MultipleChoiceField(label=q.text, 
-                    widget=forms.CheckboxSelectMultiple, choices = question_choices)
-            elif q.question_type == Question.INTEGER:
-                self.fields["question_%d" % q.pk] = forms.IntegerField(label=q.text)                
-            
-            # if the field is required, give it a corresponding css class.
-            if q.required:
-                self.fields["question_%d" % q.pk].required = True
-                self.fields["question_%d" % q.pk].widget.attrs["class"] = "required"
+        for index, q in enumerate(survey.questions()):
+            if self.survey.display_by_question and index != self.step and self.step is not None:
+                continue
             else:
-                self.fields["question_%d" % q.pk].required = False
+                if q.question_type == Question.TEXT:
+                    self.fields["question_%d" % q.pk] = forms.CharField(label=q.text, 
+                        widget=forms.Textarea)
+                elif q.question_type == Question.SHORT_TEXT:
+                    self.fields["question_%d" % q.pk] = forms.CharField(label=q.text, 
+                        widget=forms.TextInput)
+                elif q.question_type == Question.RADIO:
+                    question_choices = q.get_choices()
+                    self.fields["question_%d" % q.pk] = forms.ChoiceField(label=q.text, 
+                        widget=forms.RadioSelect(renderer=HorizontalRadioRenderer), 
+                        choices = question_choices)
+                elif q.question_type == Question.SELECT:
+                    question_choices = q.get_choices()
+                    # add an empty option at the top so that the user has to
+                    # explicitly select one of the options
+                    question_choices = tuple([('', '-------------')]) + question_choices
+                    self.fields["question_%d" % q.pk] = forms.ChoiceField(label=q.text, 
+                        widget=forms.Select, choices = question_choices)
+                elif q.question_type == Question.SELECT_IMAGE:
+                    question_choices = q.get_choices()
+                    # add an empty option at the top so that the user has to
+                    # explicitly select one of the options
+                    question_choices = tuple([('', '-------------')]) + question_choices
+                    self.fields["question_%d" % q.pk] = forms.ChoiceField(label=q.text, 
+                        widget=ImageSelectWidget, choices = question_choices)
+                elif q.question_type == Question.SELECT_MULTIPLE:
+                    question_choices = q.get_choices()
+                    self.fields["question_%d" % q.pk] = forms.MultipleChoiceField(label=q.text, 
+                        widget=forms.CheckboxSelectMultiple, choices = question_choices)
+                elif q.question_type == Question.INTEGER:
+                    self.fields["question_%d" % q.pk] = forms.IntegerField(label=q.text)                
                 
-            # add the category as a css class, and add it as a data attribute
-            # as well (this is used in the template to allow sorting the
-            # questions by category)
-            if q.category:
-                classes = self.fields["question_%d" % q.pk].widget.attrs.get("class")
-                if classes:
-                    self.fields["question_%d" % q.pk].widget.attrs["class"] = classes + (" cat_%s" % q.category.name)
+                # if the field is required, give it a corresponding css class.
+                if q.required:
+                    self.fields["question_%d" % q.pk].required = True
+                    self.fields["question_%d" % q.pk].widget.attrs["class"] = "required"
                 else:
-                    self.fields["question_%d" % q.pk].widget.attrs["class"] = (" cat_%s" % q.category.name)
-                self.fields["question_%d" % q.pk].widget.attrs["category"] = q.category.name
+                    self.fields["question_%d" % q.pk].required = False
+                    
+                # add the category as a css class, and add it as a data attribute
+                # as well (this is used in the template to allow sorting the
+                # questions by category)
+                if q.category:
+                    classes = self.fields["question_%d" % q.pk].widget.attrs.get("class")
+                    if classes:
+                        self.fields["question_%d" % q.pk].widget.attrs["class"] = classes + (" cat_%s" % q.category.name)
+                    else:
+                        self.fields["question_%d" % q.pk].widget.attrs["class"] = (" cat_%s" % q.category.name)
+                    self.fields["question_%d" % q.pk].widget.attrs["category"] = q.category.name
 
 
-            # initialize the form field with values from a POST request, if any.
-            if data:
-                self.fields["question_%d" % q.pk].initial = data.get('question_%d' % q.pk)
+                # initialize the form field with values from a POST request, if any.
+                if data:
+                    self.fields["question_%d" % q.pk].initial = data.get('question_%d' % q.pk)
+
+    def has_next_step(self):
+        if self.survey.display_by_question:
+            if self.step < self.steps_count-1:
+                return True
+        return False
+
+    def next_step_url(self):
+        if self.has_next_step():
+            return reverse('survey-detail-step', kwargs={'id':self.survey.id, 'step': self.step+1})
+        else:
+            return None
+
+    def current_step_url(self):
+        return reverse('survey-detail-step', kwargs={'id':self.survey.id, 'step': self.step})
 
     def save(self, commit=True):
         # save the response object
@@ -145,6 +173,7 @@ class ResponseForm(models.ModelForm):
         logging.debug("raw data")
         logging.debug(data)
         return response
+
 
 
 

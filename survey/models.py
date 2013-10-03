@@ -3,11 +3,13 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from .utils import validate_list
 
+
 class Survey(models.Model):
     name = models.CharField(max_length=400)
     description = models.TextField()
     is_published = models.BooleanField()
     need_logged_user = models.BooleanField()
+    display_by_question = models.BooleanField()
 
     class Meta:
         verbose_name = _('survey')
