@@ -9,7 +9,7 @@ from .forms import ResponseForm
 from django.views.generic import TemplateView, View
 
 class IndexView(TemplateView):
-    template_name = "index.html"
+    template_name = "survey/list.html"
 
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
@@ -21,7 +21,7 @@ class IndexView(TemplateView):
 
 
 class SurveyDetail(View):
-    template_name = 'survey.html'
+    template_name = 'survey/survey.html'
 
     def get(self, request, *args, **kwargs):
         survey = get_object_or_404(Survey, is_published=True, id=kwargs['id'])
@@ -71,7 +71,7 @@ class SurveyDetail(View):
 
 
 class ConfirmView(TemplateView):
-    template_name = 'confirm.html'
+    template_name = 'survey/confirm.html'
 
     def get_context_data(self, **kwargs):
         context = super(ConfirmView, self).get_context_data(**kwargs)
