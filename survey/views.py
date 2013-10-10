@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 
-from .models import Survey, Category
+from .models import Survey, Category, Response
 from .forms import ResponseForm
 
 
@@ -27,10 +27,18 @@ class SurveyDetail(View):
         survey = get_object_or_404(Survey, is_published=True, id=kwargs['id'])
         if survey.need_logged_user and not request.user.is_authenticated():
             return redirect('/login/?next=%s' % request.path)
+        if survey.need_logged_user and request.user.is_authenticated():
+            if Response.objects.filter(survey=survey, user=request.user).exists():
+                return redirect('survey-completed', id=survey.id)
+
         category_items = Category.objects.filter(survey=survey)
         categories = [c.name for c in category_items]
         form = ResponseForm(survey=survey, user=request.user, step=kwargs.get('step', 0))
-        context = {'response_form': form, 'survey': survey, 'categories': categories}
+        context = {
+            'response_form': form,
+            'survey': survey,
+            'categories': categories,
+        }
 
         return render(request, self.template_name, context)
 
@@ -38,6 +46,9 @@ class SurveyDetail(View):
         survey = get_object_or_404(Survey, is_published=True, id=kwargs['id'])
         if survey.need_logged_user and not request.user.is_authenticated():
             return redirect('/login/?next=%s' % request.path)
+        if survey.need_logged_user and request.user.is_authenticated():
+            if Response.objects.filter(survey=survey, user=request.user).exists():
+                return redirect('survey-completed', id=survey.id)
         category_items = Category.objects.filter(survey=survey)
         categories = [c.name for c in category_items]
         form = ResponseForm(request.POST, survey=survey, user=request.user, step=kwargs.get('step', 0))
@@ -76,4 +87,14 @@ class ConfirmView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(ConfirmView, self).get_context_data(**kwargs)
         context['uuid'] = kwargs['uuid']
+        return context
+
+
+class SurveyCompleted(TemplateView):
+    template_name = 'survey/completed.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(SurveyCompleted, self).get_context_data(**kwargs)
+        survey = get_object_or_404(Survey, is_published=True, id=kwargs['id'])
+        context['survey'] = survey
         return context
