@@ -9,6 +9,7 @@ from survey.models import Question, Response
 from survey.models import AnswerText, AnswerRadio, AnswerSelect
 from survey.models import AnswerInteger, AnswerSelectMultiple
 from survey.widgets import ImageSelectWidget
+from survey.signals import survey_completed
 
 from django.utils.safestring import mark_safe
 
@@ -170,12 +171,6 @@ class ResponseForm(models.ModelForm):
 
                 a.response = response
                 a.save()
-        logging.debug("raw data")
-        logging.debug(data)
+        survey_completed.send(sender=Response, instance=response, data=data)
         return response
-
-
-
-
-
 
