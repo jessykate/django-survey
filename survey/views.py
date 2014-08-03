@@ -77,7 +77,11 @@ class SurveyDetail(View):
                 if response is None:
                     return redirect('/')
                 else:
-                    return redirect('survey-confirmation', uuid=response.interview_uuid)
+                    next = request.session.get('next', None)
+                    if next is not None:
+                        return redirect(next)
+                    else:
+                        return redirect('survey-confirmation', uuid=response.interview_uuid)
         return render(request, self.template_name, context)
 
 
