@@ -78,6 +78,7 @@ class SurveyDetail(View):
                     return redirect('/')
                 else:
                     next = request.session.get('next', None)
+                    del request.session['next']
                     if next is not None:
                         return redirect(next)
                     else:
