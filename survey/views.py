@@ -21,10 +21,13 @@ class IndexView(TemplateView):
 
 
 class SurveyDetail(View):
-    template_name = 'survey/survey.html'
 
     def get(self, request, *args, **kwargs):
         survey = get_object_or_404(Survey, is_published=True, id=kwargs['id'])
+        if survey.display_by_question:
+            template_name = 'survey/survey.html'
+        else:
+            template_name = 'survey/one_page_survey.html'
         if survey.need_logged_user and not request.user.is_authenticated():
             return redirect('/login/?next=%s' % request.path)
         if survey.need_logged_user and request.user.is_authenticated():
@@ -40,7 +43,7 @@ class SurveyDetail(View):
             'categories': categories,
         }
 
-        return render(request, self.template_name, context)
+        return render(request, template_name, context)
 
     def post(self, request, *args, **kwargs):
         survey = get_object_or_404(Survey, is_published=True, id=kwargs['id'])
@@ -83,7 +86,11 @@ class SurveyDetail(View):
                         return redirect(next)
                     else:
                         return redirect('survey-confirmation', uuid=response.interview_uuid)
-        return render(request, self.template_name, context)
+        if survey.display_by_question:
+            template_name = 'survey/survey.html'
+        else:
+            template_name = 'survey/one_page_survey.html'
+        return render(request, template_name, context)
 
 
 class ConfirmView(TemplateView):
