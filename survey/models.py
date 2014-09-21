@@ -24,7 +24,7 @@ class Survey(models.Model):
 
     def questions(self):
         if self.pk:
-            return Question.objects.filter(survey=self.pk)
+            return Question.objects.filter(survey=self.pk).order_by('category__order', 'order')
         else:
             return Question.objects.none()
 
@@ -32,6 +32,7 @@ class Survey(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=400)
     survey = models.ForeignKey(Survey)
+    order = models.IntegerField(blank=True, null=True)
 
     class Meta:
         verbose_name = _('category')

@@ -34,7 +34,7 @@ class SurveyDetail(View):
             if Response.objects.filter(survey=survey, user=request.user).exists():
                 return redirect('survey-completed', id=survey.id)
 
-        category_items = Category.objects.filter(survey=survey)
+        category_items = Category.objects.filter(survey=survey).order_by('order')
         categories = [c.name for c in category_items]
         form = ResponseForm(survey=survey, user=request.user, step=kwargs.get('step', 0))
         context = {
@@ -52,7 +52,7 @@ class SurveyDetail(View):
         if survey.need_logged_user and request.user.is_authenticated():
             if Response.objects.filter(survey=survey, user=request.user).exists():
                 return redirect('survey-completed', id=survey.id)
-        category_items = Category.objects.filter(survey=survey)
+        category_items = Category.objects.filter(survey=survey).order_by('order')
         categories = [c.name for c in category_items]
         form = ResponseForm(request.POST, survey=survey, user=request.user, step=kwargs.get('step', 0))
         context = {'response_form': form, 'survey': survey, 'categories': categories}
