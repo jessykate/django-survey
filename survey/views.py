@@ -30,7 +30,7 @@ class SurveyDetail(View):
         else:
             template_name = 'survey/one_page_survey.html'
         if survey.need_logged_user and not request.user.is_authenticated():
-            return redirect('%?next=%s' % (settings.LOGIN_URL, request.path))
+            return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
         if survey.need_logged_user and request.user.is_authenticated():
             if Response.objects.filter(survey=survey, user=request.user).exists():
                 return redirect('survey-completed', id=survey.id)
@@ -49,7 +49,7 @@ class SurveyDetail(View):
     def post(self, request, *args, **kwargs):
         survey = get_object_or_404(Survey, is_published=True, id=kwargs['id'])
         if survey.need_logged_user and not request.user.is_authenticated():
-            return redirect('%?next=%s' % (settings.LOGIN_URL, request.path))
+            return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
         if survey.need_logged_user and request.user.is_authenticated():
             if Response.objects.filter(survey=survey, user=request.user).exists():
                 return redirect('survey-completed', id=survey.id)
