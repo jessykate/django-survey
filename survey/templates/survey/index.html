@@ -1,0 +1,20 @@
+{% extends 'survey/survey_base.html' %}
+
+{% block title %}List of Surveys{% endblock %}
+
+{% block body %}
+
+<div id="intro">
+<h1>Survey List</h1>
+
+<p>Here is the list of surveys currently available on this website...</p>
+
+<ul>
+  {% for survey in surveys %}
+  <a href="{{survey.get_absolute_url}}"><li>{{survey.name}}</li></a>
+  {% endfor %}
+</ul>
+
+</div>
+
+{% endblock %}

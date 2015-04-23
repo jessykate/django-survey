@@ -36,7 +36,7 @@ class AnswerIntegerInline(AnswerBaseInline):
 	model= AnswerInteger 
 
 class ResponseAdmin(admin.ModelAdmin):
-	list_display = ('interview_uuid', 'interviewer', 'created') 
+	list_display = ('interview_uuid', 'created') 
 	inlines = [AnswerTextInline, AnswerRadioInline, AnswerSelectInline, AnswerSelectMultipleInline, AnswerIntegerInline]
 	# specifies the order as well as which fields to act on 
 	readonly_fields = ('survey', 'created', 'updated', 'interview_uuid')

@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.core.urlresolvers import reverse
 
 class Survey(models.Model):
 	name = models.CharField(max_length=400)
@@ -13,6 +14,8 @@ class Survey(models.Model):
 			return Question.objects.filter(survey=self.pk)
 		else:
 			return None
+        def get_absolute_url(self):
+                return reverse ('survey_detail', kwargs={'id': self.pk})
 
 class Category(models.Model):
 	name = models.CharField(max_length=400)
@@ -77,10 +80,10 @@ class Response(models.Model):
 	created = models.DateTimeField(auto_now_add=True)
 	updated = models.DateTimeField(auto_now=True)
 	survey = models.ForeignKey(Survey)
-	interviewer = models.CharField('Name of Interviewer', max_length=400)
-	interviewee = models.CharField('Name of Interviewee', max_length=400)
-	conditions = models.TextField('Conditions during interview', blank=True, null=True)
-	comments = models.TextField('Any additional Comments', blank=True, null=True)
+	# interviewer = models.CharField('Name of Interviewer', max_length=400)
+	# interviewee = models.CharField('Name of Interviewee', max_length=400)
+	# conditions = models.TextField('Conditions during interview', blank=True, null=True)
+	# comments = models.TextField('Any additional Comments', blank=True, null=True)
 	interview_uuid = models.CharField("Interview unique identifier", max_length=36)
 
 	def __unicode__(self):
