@@ -9,6 +9,7 @@ from .forms import ResponseForm
 
 from django.views.generic import TemplateView, View
 
+
 class IndexView(TemplateView):
     template_name = "survey/list.html"
 
@@ -25,10 +26,13 @@ class SurveyDetail(View):
 
     def get(self, request, *args, **kwargs):
         survey = get_object_or_404(Survey, is_published=True, id=kwargs['id'])
-        if survey.display_by_question:
-            template_name = 'survey/survey.html'
+        if survey.template is not None and len(survey.template) > 4:
+            template_name = survey.template
         else:
-            template_name = 'survey/one_page_survey.html'
+            if survey.display_by_question:
+                template_name = 'survey/survey.html'
+            else:
+                template_name = 'survey/one_page_survey.html'
         if survey.need_logged_user and not request.user.is_authenticated():
             return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
         if survey.need_logged_user and request.user.is_authenticated():
@@ -64,7 +68,7 @@ class SurveyDetail(View):
             for key, value in form.cleaned_data.items():
                 request.session[session_key][key] = value
                 request.session.modified = True
-            
+
             next_url = form.next_step_url()
             response = None
             if survey.display_by_question:
@@ -73,7 +77,7 @@ class SurveyDetail(View):
                     response = save_form.save()
             else:
                 response = form.save()
-            
+
             if next_url is not None:
                 return redirect(next_url)
             else:
@@ -88,10 +92,13 @@ class SurveyDetail(View):
                         return redirect(next)
                     else:
                         return redirect('survey-confirmation', uuid=response.interview_uuid)
-        if survey.display_by_question:
-            template_name = 'survey/survey.html'
+        if survey.template is not None and len(survey.template) > 4:
+            template_name = survey.template
         else:
-            template_name = 'survey/one_page_survey.html'
+            if survey.display_by_question:
+                template_name = 'survey/survey.html'
+            else:
+                template_name = 'survey/one_page_survey.html'
         return render(request, template_name, context)
 
 
