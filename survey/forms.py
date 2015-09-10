@@ -85,6 +85,7 @@ class ResponseForm(models.ModelForm):
                 if q.required:
                     self.fields["question_%d" % q.pk].required = True
                     self.fields["question_%d" % q.pk].widget.attrs["class"] = "required"
+                    self.fields["question_%d" % q.pk].widget.attrs["required"] = True
                 else:
                     self.fields["question_%d" % q.pk].required = False
                     
@@ -99,6 +100,17 @@ class ResponseForm(models.ModelForm):
                         self.fields["question_%d" % q.pk].widget.attrs["class"] = (" cat_%s" % q.category.name)
                     self.fields["question_%d" % q.pk].widget.attrs["category"] = q.category.name
 
+                if q.question_type == Question.SELECT:
+                    classes = self.fields["question_%d" % q.pk].widget.attrs.get("class")
+                    self.fields["question_%d" % q.pk].widget.attrs["class"] = classes + (" cs-select cs-skin-boxes")
+
+                if q.question_type == Question.RADIO:
+                    classes = self.fields["question_%d" % q.pk].widget.attrs.get("class")
+                    self.fields["question_%d" % q.pk].widget.attrs["class"] = classes + (" fs-radio-group fs-radio-custom clearfix")
+
+                #if q.question_type == Question.SELECT_MULTIPLE:
+                #    classes = self.fields["question_%d" % q.pk].widget.attrs.get("class")
+                #    self.fields["question_%d" % q.pk].widget.attrs["class"] = classes + (" ")
 
                 # initialize the form field with values from a POST request, if any.
                 if data:
