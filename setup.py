@@ -1,15 +1,14 @@
-from distutils.core import setup
+from setuptools import setup, find_packages
 
 setup(
     name="survey",
-    version="0.1",
+    version="0.1.1",
     author="Jessy Kate Schingler",
     author_email="jessy@jessykate.com",
     license="AGPL",
     url="https://github.com/jessykate/django-survey",
-    packages=[
-        "survey",
-    ],
+    packages=find_packages(exclude=[]),
+    include_package_data=True,
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Environment :: Web Environment",
