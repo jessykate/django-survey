@@ -10,6 +10,7 @@ class Survey(models.Model):
     is_published = models.BooleanField()
     need_logged_user = models.BooleanField()
     display_by_question = models.BooleanField()
+    template = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
         verbose_name = _('survey')
