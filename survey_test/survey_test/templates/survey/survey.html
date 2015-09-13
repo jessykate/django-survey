@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load survey_extras %}
+
+{% block title %}{{survey.name|title}}{% endblock title %}
+
+{% block extrajs %}
+
+{{response_form.media}}
+{% endblock %}
+
+{% block body %}
+
+<h1>Welcome to {{survey.name|title}}</h1>
+<div class="survey-description">
+	{{survey.description|safe}}
+</div>
+
+<div>
+	<form action="{{ response_form.current_step_url }}" method="post">{% csrf_token %}
+		<ol class="survey-questions">
+		{% for category in categories %}
+			<h3 class="collapsible">{{category|title}} Questions<span></span></h3>
+			<div class="category-container">
+			{% for field in response_form %}
+				{% if field.field.widget.attrs.category == category %}
+					<li>
+					{% if field.field.required %} 
+					<div class="field-wrapper question-required"> 
+						{{ field.errors }}
+						<span class="asterix"> * </span><label class="label-inline">{{ field.label }}</label>
+					{% else %} 
+					<div class="field-wrapper"> 
+						{{ field.errors }}
+						<label class="label-inline">{{ field.label }}</label>
+					{% endif %}
+						<span class="form-help-text">{{ field.help_text}}</span>
+						<div class="form-field-body">
+							{{ field }}
+						</div>
+					</div>
+					</li>
+				{% endif %}
+			{% endfor %}
+			</div>
+		{% endfor %}
+		
+		<div class="category-container">
+		{% for field in response_form %}
+			{% if not field.field.widget.attrs.category %}
+				<li>
+				{% if field.field.required %} 
+				<div class="field-wrapper question-required"> 
+					{{ field.errors }}
+					<span class="asterix"> * </span><label class="label-inline">{{ field.label }}</label>
+				{% else %} 
+				<div class="field-wrapper"> 
+					{{ field.errors }}
+					<label class="label-inline">{{ field.label }}</label>
+				{% endif %}
+					<span class="form-help-text">{{ field.help_text}}</span>
+					<div class="form-field-body">
+						{{ field }}
+					</div>
+				</div>
+				</li>
+			{% endif %}
+		{% endfor %}
+		</div>
+		</ol>
+
+		<div class="submit-button"><input type="submit" value="I'm done!"></div>
+	</form>
+</div>
+{% endblock %}

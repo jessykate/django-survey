@@ -7,3 +7,4 @@ media/data
 local_settings.py
 survey.db
 
+survey.egg-info
