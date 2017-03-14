@@ -25,7 +25,7 @@
 						{{ field.errors }}
 						<span class="asterix"> * </span><label class="label-inline">{{ field.label }}</label>
 					{% else %} 
-					<div class="field-wrapper"> 
+					<div class="field-wrapper">
 						{{ field.errors }}
 						<label class="label-inline">{{ field.label }}</label>
 					{% endif %}
@@ -49,7 +49,7 @@
 {% endblock %}
 
 {% block extrajs %}
-	<script src="{% static 'js/jquery.collapsible.js' %}"></script>	
+	<script src="{% static 'js/jquery.collapsible.js' %}"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			//collapsible management
