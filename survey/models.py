@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.db.models.fields.related import ForeignKey
 
 
 class Survey(models.Model):
@@ -96,6 +98,8 @@ class Response(models.Model):
     survey = models.ForeignKey(Survey)
     interview_uuid = models.CharField("Interview unique identifier",
                                       max_length=36)
+
+    user = ForeignKey(User, blank=True, null=True)
 
     def __unicode__(self):
         return "Response {}".format(self.interview_uuid)

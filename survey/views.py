@@ -39,12 +39,12 @@ def survey_detail(request, id):
     categories = [c.name for c in category_items]
     LOGGER.info('Categories for this survey: %s', categories)
     if request.method == 'POST':
-        form = ResponseForm(request.POST, survey=survey)
+        form = ResponseForm(request.POST, survey=survey, user=request.user)
         if form.is_valid():
             response = form.save()
             return HttpResponseRedirect("/confirm/%s" % response.interview_uuid)
     else:
-        form = ResponseForm(survey=survey)
+        form = ResponseForm(survey=survey, user=request.user)
         LOGGER.info(form)
         # TODO sort by category
     return render(

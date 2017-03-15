@@ -4,12 +4,15 @@ import logging
 import uuid
 
 from django import forms
+from django.conf import settings
+from django.contrib.auth.models import User
 from django.forms import models
 from django.utils.safestring import mark_safe
 
 from survey.models import (AnswerInteger, AnswerRadio, AnswerSelect,
                            AnswerSelectMultiple, AnswerText, Question,
                            Response)
+
 
 LOGGER = logging.getLogger(__name__)
 
@@ -27,16 +30,26 @@ class ResponseForm(models.ModelForm):
         fields = ()
 
     def __init__(self, *args, **kwargs):
-        # expects a survey object to be passed in initially
+        """ Expects a survey object and a user to be passed in initially. """
         survey = kwargs.pop('survey')
         self.survey = survey
+        user = kwargs.pop('user')
+        try:
+            if user is User:
+                self.user = user
+            else:
+                # Anonymous User (settings.SURVEY_AUTH_REQUIRED is False)
+                self.user = None
+        except AttributeError:
+            # We don't want user to have to set SURVEY_AUTH_REQUIRED.
+            self.user = None
         super(ResponseForm, self).__init__(*args, **kwargs)
         self.uuid = uuid.uuid4().hex
 
         # add a field for each survey question, corresponding to the question
         # type as appropriate.
         data = kwargs.get('data')
-        for q in survey.questions.all():
+        for q in self.survey.questions.all():
             if q.question_type == Question.TEXT:
                 self.fields["question_%d" % q.pk] = forms.CharField(
                     label=q.text,
@@ -92,10 +105,11 @@ class ResponseForm(models.ModelForm):
                 self.fields["question_%d" % q.pk].initial = data.get('question_%d' % q.pk)
 
     def save(self, commit=True):
-        # save the response object
+        """ Save the response object. """
         response = super(ResponseForm, self).save(commit=False)
         response.survey = self.survey
         response.interview_uuid = self.uuid
+        response.user = self.user
         response.save()
         # create an answer object for each question and associate it with this
         # response.
