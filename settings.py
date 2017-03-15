@@ -12,6 +12,8 @@ ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
 
+# SURVEY_AUTH_REQUIRED=True
+
 MANAGERS = ADMINS
 
 DATABASES = {
