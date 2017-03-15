@@ -1,4 +1,4 @@
-# Django settings for survey project.
+# -*- coding: utf-8 -*-
 
 import os
 
