@@ -104,7 +104,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'survey.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'survey.wsgi.application'
+WSGI_APPLICATION = 'wsgi.application'
 
 TEMPLATES = [
     {
