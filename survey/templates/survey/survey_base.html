@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+    {% block content %}
+
+	<!-- Part 1: Wrap all page content here -->
+	{% block wrapper %}
+	<div id="wrap">
+	{% endblock %}
+
+	<div class="container" id="container-main">
+	{% block body %}
+	{% endblock %}
+
+	<div id="push"></div> <!-- #push goes inside container -->
+	</div> <!-- /container -->
+	</div> <!-- end #wrap -->
+	
+	<footer class="footer">
+		<div class="container">
+	{% block footer %}
+	{% endblock %}
+	</container>
+	</footer>
+	<!-- Le javascript -->
+	<link rel="stylesheet" href="/static/css/flick/jquery-ui-1.9.1.custom.css"/>
+	<script src="{% static 'js/jquery-1.8.2.js' %}"></script>
+	<script src="{% static 'js/jquery-ui-1.9.1.custom.js' %}"></script>
+	<script src="{% static 'js/bootstrap.js' %}"></script>
+	<script>
+		// use the jquery UI datepicker on all pages with the datepicker class:
+		$(".datepicker").datepicker({ minDate: 0});
+	</script>
+	{% block extrajs %}
+	{% endblock %}
+    {% endblock %}

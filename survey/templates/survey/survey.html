@@ -1,0 +1,59 @@
+{% extends 'survey/survey_base.html' %}
+
+{% load static %}
+{% load survey_extras %}
+
+{% block body %}
+
+<h1>Welcome to {{survey.name|title}}</h1>
+<div class="survey-description">
+	{{survey.description|safe}}
+</div>
+
+<div>
+	<form action="{% url 'survey_detail' id=survey.id %}" method="post">{% csrf_token %}
+
+		<ol class="survey-questions">
+		{% for category in categories %}
+			<h3 class="collapsible">{{category|title}}<span></span></h3>
+			<div class="category-container">
+			{% for field in response_form %}
+				{% if field.field.widget.attrs.category == category %}
+					<li class="q-item" value="{% counter %}">
+					{% if field.field.required %} 
+					<div class="field-wrapper question-required"> 
+						{{ field.errors }}
+						<span class="asterix"> * </span><label class="label-inline">{{ field.label }}</label>
+					{% else %} 
+					<div class="field-wrapper">
+						{{ field.errors }}
+						<label class="label-inline">{{ field.label }}</label>
+					{% endif %}
+						<span class="form-help-text">{{ field.help_text}}</span>
+						<div class="form-field-body">
+							{{ field }}
+						</div>
+					</div>
+					</li>
+				{% endif %}
+			{% endfor %}
+			</div>
+		{% endfor %}
+		</ol>
+
+		<div class="submit-button"><input type="submit" value="I'm done!"></div>
+	</form>
+
+</div>
+
+{% endblock %}
+
+{% block extrajs %}
+	<script src="{% static 'js/jquery.collapsible.js' %}"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			//collapsible management
+			$('.collapsible').collapsible({defaultOpen: 'response_metadata'});
+		});
+	</script>
+{% endblock %}

@@ -6,4 +6,6 @@ media/data
 *.pyc
 local_settings.py
 survey.db
-
+.project
+.pydevproject
+.settings/

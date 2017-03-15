@@ -9,6 +9,9 @@ categories, and mark them as required or not. the front-end survey view then
 automatically populates based on the questions that have been defined in the
 admin interface.
 
+If you define SURVEY_AUTH_REQUIRED=True in the settings only authenticated user
+will be able to participate.
+
 Submitted responses can also be viewed via the admin backend. 
 
 ## credits 

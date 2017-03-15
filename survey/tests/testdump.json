@@ -1,0 +1,134 @@
+[
+{
+ "model": "sites.site",
+ "pk": 1,
+ "fields": {
+  "domain": "example.com",
+  "name": "example.com"
+ }
+},
+{
+ "model": "survey.survey",
+ "pk": 1,
+ "fields": {
+  "name": "Test survey",
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+ }
+},
+{
+ "model": "survey.survey",
+ "pk": 2,
+ "fields": {
+  "name": "Short Survey",
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+ }
+},
+{
+ "model": "survey.category",
+ "pk": 1,
+ "fields": {
+  "name": "Lorem",
+  "survey": 1
+ }
+},
+{
+ "model": "survey.category",
+ "pk": 2,
+ "fields": {
+  "name": "Ipsum",
+  "survey": 1
+ }
+},
+{
+ "model": "survey.category",
+ "pk": 3,
+ "fields": {
+  "name": "Dolor",
+  "survey": 1
+ }
+},
+{
+ "model": "survey.question",
+ "pk": 1,
+ "fields": {
+  "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "required": true,
+  "category": 1,
+  "survey": 1,
+  "question_type": "select-multiple",
+  "choices": "Yes, no, Maybe"
+ }
+},
+{
+ "model": "survey.question",
+ "pk": 2,
+ "fields": {
+  "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "required": false,
+  "category": 2,
+  "survey": 1,
+  "question_type": "radio",
+  "choices": "Yes, No"
+ }
+},
+{
+ "model": "survey.question",
+ "pk": 3,
+ "fields": {
+  "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "required": false,
+  "category": 3,
+  "survey": 1,
+  "question_type": "text",
+  "choices": ""
+ }
+},
+{
+ "model": "survey.question",
+ "pk": 4,
+ "fields": {
+  "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "required": false,
+  "category": 1,
+  "survey": 1,
+  "question_type": "select",
+  "choices": "Yes, No, Maybe"
+ }
+},
+{
+ "model": "survey.question",
+ "pk": 5,
+ "fields": {
+  "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "required": true,
+  "category": 2,
+  "survey": 1,
+  "question_type": "integer",
+  "choices": ""
+ }
+},
+{
+ "model": "survey.question",
+ "pk": 6,
+ "fields": {
+  "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "required": true,
+  "category": 3,
+  "survey": 1,
+  "question_type": "select-multiple",
+  "choices": "Yes, No , Maybe, Whatever"
+ }
+},
+{
+ "model": "survey.question",
+ "pk": 7,
+ "fields": {
+  "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "required": true,
+  "category": null,
+  "survey": 2,
+  "question_type": "select-multiple",
+  "choices": "Yes,No"
+ }
+}
+]
