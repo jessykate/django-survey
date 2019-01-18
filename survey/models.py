@@ -52,8 +52,7 @@ class Question(models.Model):
 		help_text='if the question type is "radio," "select," or "select multiple" provide a comma-separated list of options for this question .')
 
 	def save(self, *args, **kwargs):
-		if (self.question_type == Question.RADIO or self.question_type == Question.SELECT 
-			or self.question_type == Question.SELECT_MULTIPLE):
+		if self.question_type in [Question.RADIO, Question.SELECT, Question.SELECT_MULTIPLE]:
 			validate_list(self.choices)
 		super(Question, self).save(*args, **kwargs)
 
