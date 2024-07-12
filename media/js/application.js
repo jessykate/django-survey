@@ -16,7 +16,7 @@
 
     // add-ons
     $('.add-on :checkbox').on('click', function () {
-      var $this = $(this)
+      let $this = $(this)
         , method = $this.attr('checked') ? 'addClass' : 'removeClass'
       $(this).parents('.add-on')[method]('active')
     })
@@ -44,7 +44,7 @@
     }
 
     // fix sub nav on scroll
-    var $win = $(window)
+    let $win = $(window)
       , $nav = $('.subnav')
       , navTop = $('.subnav').length && $('.subnav').offset().top - 40
       , isFixed = 0
@@ -54,7 +54,7 @@
     $win.on('scroll', processScroll)
 
     function processScroll() {
-      var i, scrollTop = $win.scrollTop()
+      let scrollTop = $win.scrollTop()
       if (scrollTop >= navTop && !isFixed) {
         isFixed = 1
         $nav.addClass('subnav-fixed')
@@ -82,7 +82,7 @@
     // button state demo
     $('#fat-btn')
       .click(function () {
-        var btn = $(this)
+        let btn = $(this)
         btn.button('loading')
         setTimeout(function () {
           btn.button('reset')
@@ -93,7 +93,7 @@
     $('#myCarousel').carousel()
 
     // javascript build logic
-    var inputsComponent = $("#components.download input")
+    let inputsComponent = $("#components.download input")
       , inputsPlugin = $("#plugins.download input")
       , inputsVariables = $("#variables.download input")
 
@@ -116,7 +116,7 @@
     // request built javascript
     $('.download-btn').on('click', function () {
 
-      var css = $("#components.download input:checked")
+      let css = $("#components.download input:checked")
             .map(function () { return this.value })
             .toArray()
         , js = $("#plugins.download input:checked")
@@ -147,18 +147,17 @@
 
 // Modified from the original jsonpi https://github.com/benvinegar/jquery-jsonpi
 $.ajaxTransport('jsonpi', function(opts, originalOptions, jqXHR) {
-  var url = opts.url;
+  let url = opts.url;
 
   return {
     send: function(_, completeCallback) {
-      var name = 'jQuery_iframe_' + jQuery.now()
-        , iframe, form
+      let name = 'jQuery_iframe_' + jQuery.now()
 
-      iframe = $('<iframe>')
+      let iframe = $('<iframe>')
         .attr('name', name)
         .appendTo('head')
 
-      form = $('<form>')
+      let form = $('<form>')
         .attr('method', opts.type) // GET or POST
         .attr('action', url)
         .attr('target', name)
